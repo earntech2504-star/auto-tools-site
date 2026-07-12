@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
 const multer = require('multer');
+const FormData = require('form-data');  // ← Ye line add ki maine
 const app = express();
 const upload = multer();
 
@@ -24,10 +25,16 @@ app.post('/api/generate-image', async (req, res) => {
         body: JSON.stringify({ inputs: prompt })
       }
     );
+    
+    if (!response.ok) {
+      return res.status(500).json({ error: 'HuggingFace API failed' });
+    }
+    
     const imageBuffer = await response.buffer();
     res.set('Content-Type', 'image/png');
     res.send(imageBuffer);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: 'Image generation failed' });
   }
 });
@@ -44,10 +51,16 @@ app.post('/api/remove-bg', upload.single('image'), async (req, res) => {
       headers: { 'X-Api-Key': process.env.REMOVE_BG_KEY },
       body: formData
     });
+    
+    if (!response.ok) {
+      return res.status(500).json({ error: 'Remove.bg API failed' });
+    }
+    
     const imageBuffer = await response.buffer();
     res.set('Content-Type', 'image/png');
     res.send(imageBuffer);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: 'Background removal failed' });
   }
 });
