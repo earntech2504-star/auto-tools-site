@@ -1,6 +1,7 @@
 {
   "name": "auto-tools-site",
   "version": "1.0.0",
+  "type": "module",
   "dependencies": {
     "node-fetch": "^2.7.0",
     "multer": "^1.4.4",
